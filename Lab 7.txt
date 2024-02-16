@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// โครงสร้าง studentNode เก็บข้อมูลนักเรียน
+typedef struct studentNode {
+  char name[20]; // ชื่อ
+  int age;      // อายุ
+  char sex;     // เพศ
+  float gpa;    // คะแนนเฉลี่ย
+  struct studentNode *next; // พอยน์เตอร์ไปยังโหนดถัดไป
+} NODE;
+
+// ฟังก์ชันสร้างโหนดใหม่
+NODE *newNode(char *name, int age, char sex, float gpa) {
+  NODE *node = (NODE *)malloc(sizeof(NODE));
+  strcpy(node->name, name);
+  node->age = age;
+  node->sex = sex;
+  node->gpa = gpa;
+  node->next = NULL;
+  return node;
+}
+
+// ฟังก์ชันแทรกโหนดใหม่
+void insertNode(NODE **head, NODE *node) {
+  node->next = *head;
+  *head = node;
+}
+
+// ฟังก์ชันลบโหนด
+void deleteNode(NODE **head) {
+  NODE *temp = *head;
+  *head = (*head)->next;
+  free(temp);
+}
+
+// ฟังก์ชันแสดงข้อมูลโหนด
+void printNode(NODE *node) {
+  if (node == NULL) {
+    printf("NULL\n");
+  } else {
+    printf("%s %d %c %.2f\n", node->name, node->age, node->sex, node->gpa);
+  }
+}
+
+// ฟังก์ชันแสดงข้อมูลทุกโหนด
+void printAllNodes(NODE *head) {
+  while (head != NULL) {
+    printNode(head);
+    head = head->next;
+  }
+}
+
+// ฟังก์ชันค้นหาโหนด
+NODE *findNode(NODE *head, char *name) {
+  while (head != NULL) {
+    if (strcmp(head->name, name) == 0) {
+      return head;
+    }
+    head = head->next;
+  }
+  return NULL;
+}
+
+// ฟังก์ชัน main
+int main() {
+  // ประกาศตัวแปร head
+  NODE *head = NULL;
+
+  // แทรกข้อมูลลงในลิงค์ลิสต์
+  insertNode(&head, newNode("one", 1, 'A', 1.1));
+  insertNode(&head, newNode("two", 2, 'B', 2.2));
+  insertNode(&head, newNode("three", 3, 'C', 3.3));
+
+  // ค้นหาโหนด "two" และแสดงข้อมูล
+  NODE *node = findNode(head, "two");
+  printNode(node);
+
+  // ลบโหนด "three"
+  deleteNode(&head);
+
+  // ค้นหาโหนด "six" และแสดงข้อมูล
+  node = findNode(head, "six");
+  printNode(node);
+
+  // ค้นหาโหนด "one" และแสดงข้อมูล
+  node = findNode(head, "one");
+  printNode(node);
+
+  // ค้นหาโหนด "six" และแสดงข้อมูล
+  node = findNode(head, "six");
+  printNode(node);
+
+  return 0;
+}
